@@ -4,13 +4,17 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
+	"encoding/hex"
 	"errors"
 	"fmt"
+	"io"
+	"math/big"
+
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto/sha3"
+	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/keybase/go-codec/codec"
 	"github.com/kyokan/plasma/util"
-	"math/big"
-	"github.com/ethereum/go-ethereum/common"
 )
 
 type Transaction struct {
@@ -170,4 +174,62 @@ func doHash(values []interface{}) util.Hash {
 
 	digest := sha3.Sum256(buf.Bytes())
 	return digest[:]
+}
+
+func (tx *Transaction) RLPHash() util.Hash {
+	bytes, err := rlp.EncodeToBytes(tx)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return hash(bytes)
+}
+
+func hash(b []byte) util.Hash {
+	hash := sha3.NewKeccak256()
+
+	var buf []byte
+	hash.Write(b)
+	buf = hash.Sum(buf)
+	fmt.Println(hex.EncodeToString(buf))
+
+	return buf
+}
+
+// EncodeRLP writes p as RLP list [a, b] that omits the Name field.
+func (tx *Transaction) EncodeRLP(w io.Writer) (err error) {
+	// Note: the receiver can be a nil pointer. This allows you to
+	// control the encoding of nil, but it also means that you have to
+	// check for a nil receiver.
+	if tx == nil {
+		// TODO: expand this out
+		err = rlp.Encode(w, []uint{0, 0})
+	} else {
+		// TODO: it's really important that I get this part right.
+		// TODO: should i leave this expanded or not.
+
+		var newOwner0 common.Address
+		var amount0 *big.Int
+		var newOwner1 common.Address
+		var amount1 *big.Int
+
+		if tx.Output0 != nil {
+			newOwner0 = tx.Output0.NewOwner
+			amount0 = tx.Output0.Amount
+		}
+
+		if tx.Output1 != nil {
+			newOwner1 = tx.Output1.NewOwner
+			amount1 = tx.Output1.Amount
+		}
+
+		err = rlp.Encode(w, []interface{}{
+			newOwner0,
+			amount0,
+			newOwner1,
+			amount1,
+		})
+	}
+	return err
 }

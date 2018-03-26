@@ -3,6 +3,10 @@ package util
 import (
 	"bufio"
 	"bytes"
+	"encoding/hex"
+	"fmt"
+	"math"
+
 	"github.com/ethereum/go-ethereum/crypto/sha3"
 	"github.com/keybase/go-codec/codec"
 )
@@ -33,10 +37,24 @@ func (n MerkleNode) ToCbor() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+func TreeFromRLPItems(items []RLPHashable) MerkleTree {
+	if len(items) == 0 {
+		emptyTree()
+	}
+
+	var level []MerkleNode
+	level = make([]MerkleNode, len(items))
+
+	for i, item := range items {
+		level[i] = MerkleNode{Hash: item.RLPHash()}
+	}
+
+	return treeFromLevel16(level)
+}
+
 func TreeFromItems(items []Hashable) MerkleTree {
 	if len(items) == 0 {
-		empty := sha3.Sum256(make([]byte, 0))
-		return MerkleTree{Root: MerkleNode{Hash: empty[:]}}
+		emptyTree()
 	}
 
 	var level []MerkleNode
@@ -46,6 +64,57 @@ func TreeFromItems(items []Hashable) MerkleTree {
 		level[i] = MerkleNode{Hash: item.Hash()}
 	}
 
+	return treeFromLevel(level)
+}
+
+func emptyTree() MerkleTree {
+	empty := sha3.Sum256(make([]byte, 0))
+	return MerkleTree{Root: MerkleNode{Hash: empty[:]}}
+}
+
+func treeFromLevel16(level []MerkleNode) MerkleTree {
+
+	if float64(len(level)) > math.Pow(2, 15) {
+		// TODO: throw err instead.
+		panic("Level must fit within a tree of depth 16!")
+	}
+
+	fmt.Println("**** treeFromLevel16")
+	fmt.Println(level)
+
+	emptyHash := hash(make([]byte, 32))
+
+	// Always hash 16 levels.
+	for i := 0; i < 15; i++ {
+		var nextLevel []MerkleNode
+
+		for i := 0; i < len(level); i += 2 {
+			left := &level[i]
+			var right *MerkleNode
+
+			// 	// Empty so add an empty node.
+			if i+1 > len(level)-1 {
+				right = &MerkleNode{
+					Hash: emptyHash,
+				}
+			} else {
+				right = &level[i+1]
+			}
+
+			nextLevel = append(nextLevel, MerkleNode{
+				Left:  left,
+				Right: right,
+				Hash:  hash(append(left.Hash, right.Hash...)),
+			})
+		}
+
+		level = nextLevel
+	}
+
+	return MerkleTree{Root: level[0]}
+}
+
+func treeFromLevel(level []MerkleNode) MerkleTree {
 	if len(level) == 1 {
 		return MerkleTree{Root: level[0]}
 	}
@@ -91,6 +160,18 @@ func TreeFromItems(items []Hashable) MerkleTree {
 	}
 
 	return MerkleTree{Root: root}
+}
+
+func hash(b []byte) Hash {
+	hash := sha3.NewKeccak256()
+
+	var buf []byte
+	hash.Write(b)
+	buf = hash.Sum(buf)
+
+	fmt.Println(hex.EncodeToString(buf))
+
+	return buf
 }
 
 func hashChildren(left *MerkleNode, right *MerkleNode) Hash {

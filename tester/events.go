@@ -83,6 +83,7 @@ func ExitStartedFilter(plasma *contracts.Plasma) {
 	for next {
 		if itr.Event != nil {
 			fmt.Println(itr.Event.Sender.Hex())
+			fmt.Println(itr.Event.Amount)
 			fmt.Println(itr.Event.Blocknum)
 			fmt.Println(itr.Event.Txindex)
 			fmt.Println(itr.Event.Oindex)
@@ -92,6 +93,141 @@ func ExitStartedFilter(plasma *contracts.Plasma) {
 	}
 
 	fmt.Printf("%d Exit started logs found \n", length)
+}
+
+func DebugAddressFilter(plasma *contracts.Plasma) {
+	opts := bind.FilterOpts{
+		Start:   0x0, // TODO: in the future we should store the last starting point in the db.
+		End:     nil,
+		Context: context.Background(),
+	}
+
+	itr, err := plasma.FilterDebugAddress(&opts)
+
+	if err != nil {
+		panic(err)
+	}
+
+	next := true
+	length := 0
+
+	for next {
+		if itr.Event != nil {
+			fmt.Println(itr.Event.Item.Hex())
+			length++
+		}
+		next = itr.Next()
+	}
+
+	fmt.Printf("%d Debug RLP Address logs found \n", length)
+}
+
+func DebugUintFilter(plasma *contracts.Plasma) {
+	opts := bind.FilterOpts{
+		Start:   0x0, // TODO: in the future we should store the last starting point in the db.
+		End:     nil,
+		Context: context.Background(),
+	}
+
+	itr, err := plasma.FilterDebugUint(&opts)
+
+	if err != nil {
+		panic(err)
+	}
+
+	next := true
+	length := 0
+
+	for next {
+		if itr.Event != nil {
+			fmt.Println(itr.Event.Item)
+			length++
+		}
+		next = itr.Next()
+	}
+
+	fmt.Printf("%d Debug RLP Uint logs found \n", length)
+}
+
+func DebugBoolFilter(plasma *contracts.Plasma) {
+	opts := bind.FilterOpts{
+		Start:   0x0, // TODO: in the future we should store the last starting point in the db.
+		End:     nil,
+		Context: context.Background(),
+	}
+
+	itr, err := plasma.FilterDebugBool(&opts)
+
+	if err != nil {
+		panic(err)
+	}
+
+	next := true
+	length := 0
+
+	for next {
+		if itr.Event != nil {
+			fmt.Println(itr.Event.Item)
+			length++
+		}
+		next = itr.Next()
+	}
+
+	fmt.Printf("%d Debug Bool logs found \n", length)
+}
+
+func DebugBytesFilter(plasma *contracts.Plasma) {
+	opts := bind.FilterOpts{
+		Start:   0x0, // TODO: in the future we should store the last starting point in the db.
+		End:     nil,
+		Context: context.Background(),
+	}
+
+	itr, err := plasma.FilterDebugBytes(&opts)
+
+	if err != nil {
+		panic(err)
+	}
+
+	next := true
+	length := 0
+
+	for next {
+		if itr.Event != nil {
+			fmt.Println(itr.Event.Item)
+			length++
+		}
+		next = itr.Next()
+	}
+
+	fmt.Printf("%d Debug Bytes logs found \n", length)
+}
+
+func DebugBytes32Filter(plasma *contracts.Plasma) {
+	opts := bind.FilterOpts{
+		Start:   0x0, // TODO: in the future we should store the last starting point in the db.
+		End:     nil,
+		Context: context.Background(),
+	}
+
+	itr, err := plasma.FilterDebugBytes32(&opts)
+
+	if err != nil {
+		panic(err)
+	}
+
+	next := true
+	length := 0
+
+	for next {
+		if itr.Event != nil {
+			fmt.Println(itr.Event.Item)
+			length++
+		}
+		next = itr.Next()
+	}
+
+	fmt.Printf("%d Debug Bytes32 logs found \n", length)
 }
 
 func DepositWatchFilter(plasma *contracts.Plasma) {

@@ -56,15 +56,30 @@ func Main(c *cli.Context) {
 	}
 
 	plasma := CreatePlasmaClient(nodeURL, contractAddress)
-	Deposit(plasma, privateKeyECDSA, 1000000000)
+	Deposit(plasma, privateKeyECDSA, userAddress, 1000000000)
 	time.Sleep(5 * time.Second)
-	SubmitBlock(plasma, privateKeyECDSA)
+
+	txs := CreateTransactions(userAddress)
+	merkle := CreateMerkleTree(txs)
+
+	SubmitBlock(plasma, privateKeyECDSA, userAddress, txs, merkle)
 	time.Sleep(5 * time.Second)
-	StartExit(plasma, privateKeyECDSA)
+	// Exit tx1
+	StartExit(plasma, privateKeyECDSA, userAddress, txs, merkle, 1)
 	time.Sleep(3 * time.Second)
 	DepositFilter(plasma)
 	time.Sleep(3 * time.Second)
 	SubmitBlockFilter(plasma)
 	time.Sleep(3 * time.Second)
 	ExitStartedFilter(plasma)
+	time.Sleep(3 * time.Second)
+	DebugAddressFilter(plasma)
+	time.Sleep(3 * time.Second)
+	DebugUintFilter(plasma)
+	time.Sleep(3 * time.Second)
+	DebugBoolFilter(plasma)
+	time.Sleep(3 * time.Second)
+	DebugBytes32Filter(plasma)
+	time.Sleep(3 * time.Second)
+	DebugBytesFilter(plasma)
 }
