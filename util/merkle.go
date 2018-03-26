@@ -3,7 +3,6 @@ package util
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"math"
 
 	"github.com/ethereum/go-ethereum/crypto/sha3"
@@ -77,9 +76,6 @@ func treeFromLevel16(level []MerkleNode) MerkleTree {
 		// TODO: throw err instead.
 		panic("Level must fit within a tree of depth 16!")
 	}
-
-	fmt.Println("**** treeFromLevel16")
-	fmt.Println(level)
 
 	emptyHash := DoHash(make([]byte, 32))
 
