@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -183,32 +182,15 @@ func (tx *Transaction) RLPHash() util.Hash {
 		panic(err)
 	}
 
-	return hash(bytes)
-}
-
-func hash(b []byte) util.Hash {
-	hash := sha3.NewKeccak256()
-
-	var buf []byte
-	hash.Write(b)
-	buf = hash.Sum(buf)
-	fmt.Println(hex.EncodeToString(buf))
-
-	return buf
+	return util.DoHash(bytes)
 }
 
 // EncodeRLP writes p as RLP list [a, b] that omits the Name field.
+// TODO: extend this beyond just outputs.
 func (tx *Transaction) EncodeRLP(w io.Writer) (err error) {
-	// Note: the receiver can be a nil pointer. This allows you to
-	// control the encoding of nil, but it also means that you have to
-	// check for a nil receiver.
 	if tx == nil {
-		// TODO: expand this out
-		err = rlp.Encode(w, []uint{0, 0})
+		err = rlp.Encode(w, []uint{0, 0, 0, 0})
 	} else {
-		// TODO: it's really important that I get this part right.
-		// TODO: should i leave this expanded or not.
-
 		var newOwner0 common.Address
 		var amount0 *big.Int
 		var newOwner1 common.Address

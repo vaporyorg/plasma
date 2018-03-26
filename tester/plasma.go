@@ -3,7 +3,6 @@ package tester
 import (
 	"context"
 	"crypto/ecdsa"
-	"encoding/hex"
 	"fmt"
 	"log"
 	"math/big"
@@ -42,12 +41,6 @@ func StartExit(
 	}
 
 	proof := createMerkleProof(merkle, txindex)
-
-	//    1
-	//  1   2
-	// 1 2 3 4
-	fmt.Println("**** proof")
-	fmt.Println(hex.EncodeToString(proof))
 
 	tx, err := plasma.StartExit(
 		auth,
@@ -141,7 +134,6 @@ func createMerkleProof(merkle util.MerkleTree, index int) []byte {
 	return proofs[index]
 }
 
-// Note that this tree will be left heavy and always have a right node, even if it has a hash of zero bytes.
 // TODO: we could optimize this with an index.
 func findProofs(node *util.MerkleNode, curr [][]byte, depth int) [][]byte {
 	if node.Left == nil && node.Right == nil {
@@ -173,17 +165,6 @@ func findProofs(node *util.MerkleNode, curr [][]byte, depth int) [][]byte {
 	return append(left, right...)
 }
 
-func createMerkleRoot(merkle util.MerkleTree) [32]byte {
-	var res [32]byte
-	hash := merkle.Root.Hash
-
-	for i := 0; i < Min(len(res), len(hash)); i++ {
-		res[i] = hash[i]
-	}
-
-	return res
-}
-
 func CreateMerkleTree(accepted []chain.Transaction) util.MerkleTree {
 	hashables := make([]util.RLPHashable, len(accepted))
 
@@ -194,13 +175,6 @@ func CreateMerkleTree(accepted []chain.Transaction) util.MerkleTree {
 
 	merkle := util.TreeFromRLPItems(hashables)
 	return merkle
-}
-
-func Min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
 }
 
 func createTestTransaction(address string, amount int) chain.Transaction {

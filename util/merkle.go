@@ -3,7 +3,6 @@ package util
 import (
 	"bufio"
 	"bytes"
-	"encoding/hex"
 	"fmt"
 	"math"
 
@@ -39,7 +38,7 @@ func (n MerkleNode) ToCbor() ([]byte, error) {
 
 func TreeFromRLPItems(items []RLPHashable) MerkleTree {
 	if len(items) == 0 {
-		emptyTree()
+		return emptyTree()
 	}
 
 	var level []MerkleNode
@@ -54,7 +53,7 @@ func TreeFromRLPItems(items []RLPHashable) MerkleTree {
 
 func TreeFromItems(items []Hashable) MerkleTree {
 	if len(items) == 0 {
-		emptyTree()
+		return emptyTree()
 	}
 
 	var level []MerkleNode
@@ -82,7 +81,7 @@ func treeFromLevel16(level []MerkleNode) MerkleTree {
 	fmt.Println("**** treeFromLevel16")
 	fmt.Println(level)
 
-	emptyHash := hash(make([]byte, 32))
+	emptyHash := DoHash(make([]byte, 32))
 
 	// Always hash 16 levels.
 	for i := 0; i < 15; i++ {
@@ -104,7 +103,7 @@ func treeFromLevel16(level []MerkleNode) MerkleTree {
 			nextLevel = append(nextLevel, MerkleNode{
 				Left:  left,
 				Right: right,
-				Hash:  hash(append(left.Hash, right.Hash...)),
+				Hash:  DoHash(append(left.Hash, right.Hash...)),
 			})
 		}
 
@@ -160,18 +159,6 @@ func treeFromLevel(level []MerkleNode) MerkleTree {
 	}
 
 	return MerkleTree{Root: root}
-}
-
-func hash(b []byte) Hash {
-	hash := sha3.NewKeccak256()
-
-	var buf []byte
-	hash.Write(b)
-	buf = hash.Sum(buf)
-
-	fmt.Println(hex.EncodeToString(buf))
-
-	return buf
 }
 
 func hashChildren(left *MerkleNode, right *MerkleNode) Hash {

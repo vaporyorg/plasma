@@ -64,7 +64,6 @@ func Main(c *cli.Context) {
 
 	SubmitBlock(plasma, privateKeyECDSA, userAddress, txs, merkle)
 	time.Sleep(5 * time.Second)
-	// Exit tx1
 	StartExit(plasma, privateKeyECDSA, userAddress, txs, merkle, 1)
 	time.Sleep(3 * time.Second)
 	DepositFilter(plasma)
