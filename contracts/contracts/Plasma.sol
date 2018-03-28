@@ -25,8 +25,9 @@ contract Plasma {
     mapping(uint256 => childBlock) public childChain;
     mapping(uint256 => exit) public exits;
     uint256 public currentChildBlock;
-    uint256[] public exitsIndexes;
+    uint256[] public exitPriority;
     uint256 public lastExitId; // Not sure if this makes sense with a priority queue
+    uint256 public lastFinalizedTime;
 
     struct childBlock {
         bytes32 root;
@@ -45,6 +46,7 @@ contract Plasma {
     function Plasma() {
         authority = msg.sender;
         currentChildBlock = 1;
+        lastFinalizedTime = block.timestamp;
     }
 
     function submitBlock(bytes32 root) public {
@@ -113,10 +115,10 @@ contract Plasma {
 
         require(exists);
 
-        uint256 exitId = exitsIndexes.length++;
+        uint256 exitId = exitPriority.length++;
         // TODO: what does this mean when we have a priority queue
         lastExitId = exitId;
-        exitsIndexes[exitId] = exitId;
+        exitPriority[exitId] = exitId;
         
         exits[exitId] = exit({
             owner: msg.sender,
@@ -219,5 +221,33 @@ contract Plasma {
         }
 
         return otherRoot == root;
+    }
+
+    // Periodically monitor if we should finalize
+    function shouldFinalize() constant returns (bool) {
+        //finalize every 2 days or something?
+        return block.timestamp - lastFinalizedTime == 100;
+    }
+
+    // TODO: automatically attempt to finalize after other contract calls?
+    function finalize() {
+        for(uint i = 0; i < exitPriority.length; i++) {
+            // TODO: update when using priority queue
+            var exitId = exitPriority[i];
+            var currExit = exits[exitId];
+            if(isSevenDays(currExit.started_at)) {
+                // pay them
+                currExit.owner.send(currExit.amount);
+
+                // Is this the correct way to get current timestamp
+                lastFinalizedTime = block.timestamp;
+            }
+        }
+    }
+
+    function isSevenDays(uint timestamp) returns (bool) {
+        // After seven days allow exits to process if they haven't been challenged.
+        // TODO: reset the queue?
+        return false;
     }
 }
