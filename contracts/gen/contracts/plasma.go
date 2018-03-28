@@ -16,7 +16,7 @@ import (
 )
 
 // PlasmaABI is the input ABI used to generate the binding from.
-const PlasmaABI = "[{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"exits\",\"outputs\":[{\"name\":\"owner\",\"type\":\"address\"},{\"name\":\"amount\",\"type\":\"uint256\"},{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"oindex\",\"type\":\"uint256\"},{\"name\":\"started_at\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"exitsIndexes\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"txBytes\",\"type\":\"bytes\"}],\"name\":\"createSimpleMerkleRoot\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"currentChildBlock\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"txBytes\",\"type\":\"bytes\"}],\"name\":\"deposit\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"oindex\",\"type\":\"uint256\"},{\"name\":\"txBytes\",\"type\":\"bytes\"},{\"name\":\"proof\",\"type\":\"bytes\"}],\"name\":\"startExit\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"root\",\"type\":\"bytes32\"}],\"name\":\"submitBlock\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"authority\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"txBytes\",\"type\":\"bytes\"},{\"name\":\"proof\",\"type\":\"bytes\"}],\"name\":\"checkProof\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"childChain\",\"outputs\":[{\"name\":\"root\",\"type\":\"bytes32\"},{\"name\":\"created_at\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"root\",\"type\":\"bytes32\"}],\"name\":\"SubmitBlock\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"blocknum\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"txindex\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"oindex\",\"type\":\"uint256\"}],\"name\":\"ExitStarted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bytes32\"}],\"name\":\"DebugBytes32\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bytes\"}],\"name\":\"DebugBytes\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"address\"}],\"name\":\"DebugAddress\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"uint256\"}],\"name\":\"DebugUint\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bool\"}],\"name\":\"DebugBool\",\"type\":\"event\"}]"
+const PlasmaABI = "[{\"constant\":true,\"inputs\":[],\"name\":\"lastExitId\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"exits\",\"outputs\":[{\"name\":\"owner\",\"type\":\"address\"},{\"name\":\"amount\",\"type\":\"uint256\"},{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"oindex\",\"type\":\"uint256\"},{\"name\":\"started_at\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"exitId\",\"type\":\"uint256\"},{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"txBytes\",\"type\":\"bytes\"},{\"name\":\"proof\",\"type\":\"bytes\"}],\"name\":\"challengeExit\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"exitsIndexes\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"txBytes\",\"type\":\"bytes\"}],\"name\":\"createSimpleMerkleRoot\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"currentChildBlock\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"txBytes\",\"type\":\"bytes\"}],\"name\":\"deposit\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"oindex\",\"type\":\"uint256\"},{\"name\":\"txBytes\",\"type\":\"bytes\"},{\"name\":\"proof\",\"type\":\"bytes\"}],\"name\":\"startExit\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"root\",\"type\":\"bytes32\"}],\"name\":\"submitBlock\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"authority\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"txBytes\",\"type\":\"bytes\"},{\"name\":\"proof\",\"type\":\"bytes\"}],\"name\":\"checkProof\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"childChain\",\"outputs\":[{\"name\":\"root\",\"type\":\"bytes32\"},{\"name\":\"created_at\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"root\",\"type\":\"bytes32\"}],\"name\":\"SubmitBlock\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"blocknum\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"txindex\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"oindex\",\"type\":\"uint256\"}],\"name\":\"ExitStarted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"exitId\",\"type\":\"uint256\"}],\"name\":\"ChallengeSuccess\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"exitId\",\"type\":\"uint256\"}],\"name\":\"ChallengeFailure\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bytes32\"}],\"name\":\"DebugBytes32\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bytes\"}],\"name\":\"DebugBytes\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"address\"}],\"name\":\"DebugAddress\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"uint256\"}],\"name\":\"DebugUint\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bool\"}],\"name\":\"DebugBool\",\"type\":\"event\"}]"
 
 // Plasma is an auto generated Go binding around an Ethereum contract.
 type Plasma struct {
@@ -326,6 +326,53 @@ func (_Plasma *PlasmaCallerSession) ExitsIndexes(arg0 *big.Int) (*big.Int, error
 	return _Plasma.Contract.ExitsIndexes(&_Plasma.CallOpts, arg0)
 }
 
+// LastExitId is a free data retrieval call binding the contract method 0x0992827d.
+//
+// Solidity: function lastExitId() constant returns(uint256)
+func (_Plasma *PlasmaCaller) LastExitId(opts *bind.CallOpts) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _Plasma.contract.Call(opts, out, "lastExitId")
+	return *ret0, err
+}
+
+// LastExitId is a free data retrieval call binding the contract method 0x0992827d.
+//
+// Solidity: function lastExitId() constant returns(uint256)
+func (_Plasma *PlasmaSession) LastExitId() (*big.Int, error) {
+	return _Plasma.Contract.LastExitId(&_Plasma.CallOpts)
+}
+
+// LastExitId is a free data retrieval call binding the contract method 0x0992827d.
+//
+// Solidity: function lastExitId() constant returns(uint256)
+func (_Plasma *PlasmaCallerSession) LastExitId() (*big.Int, error) {
+	return _Plasma.Contract.LastExitId(&_Plasma.CallOpts)
+}
+
+// ChallengeExit is a paid mutator transaction binding the contract method 0x404f7d66.
+//
+// Solidity: function challengeExit(exitId uint256, blocknum uint256, txindex uint256, txBytes bytes, proof bytes) returns()
+func (_Plasma *PlasmaTransactor) ChallengeExit(opts *bind.TransactOpts, exitId *big.Int, blocknum *big.Int, txindex *big.Int, txBytes []byte, proof []byte) (*types.Transaction, error) {
+	return _Plasma.contract.Transact(opts, "challengeExit", exitId, blocknum, txindex, txBytes, proof)
+}
+
+// ChallengeExit is a paid mutator transaction binding the contract method 0x404f7d66.
+//
+// Solidity: function challengeExit(exitId uint256, blocknum uint256, txindex uint256, txBytes bytes, proof bytes) returns()
+func (_Plasma *PlasmaSession) ChallengeExit(exitId *big.Int, blocknum *big.Int, txindex *big.Int, txBytes []byte, proof []byte) (*types.Transaction, error) {
+	return _Plasma.Contract.ChallengeExit(&_Plasma.TransactOpts, exitId, blocknum, txindex, txBytes, proof)
+}
+
+// ChallengeExit is a paid mutator transaction binding the contract method 0x404f7d66.
+//
+// Solidity: function challengeExit(exitId uint256, blocknum uint256, txindex uint256, txBytes bytes, proof bytes) returns()
+func (_Plasma *PlasmaTransactorSession) ChallengeExit(exitId *big.Int, blocknum *big.Int, txindex *big.Int, txBytes []byte, proof []byte) (*types.Transaction, error) {
+	return _Plasma.Contract.ChallengeExit(&_Plasma.TransactOpts, exitId, blocknum, txindex, txBytes, proof)
+}
+
 // CheckProof is a paid mutator transaction binding the contract method 0xc00ce0e5.
 //
 // Solidity: function checkProof(blocknum uint256, txindex uint256, txBytes bytes, proof bytes) returns(bool)
@@ -429,6 +476,252 @@ func (_Plasma *PlasmaSession) SubmitBlock(root [32]byte) (*types.Transaction, er
 // Solidity: function submitBlock(root bytes32) returns()
 func (_Plasma *PlasmaTransactorSession) SubmitBlock(root [32]byte) (*types.Transaction, error) {
 	return _Plasma.Contract.SubmitBlock(&_Plasma.TransactOpts, root)
+}
+
+// PlasmaChallengeFailureIterator is returned from FilterChallengeFailure and is used to iterate over the raw logs and unpacked data for ChallengeFailure events raised by the Plasma contract.
+type PlasmaChallengeFailureIterator struct {
+	Event *PlasmaChallengeFailure // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *PlasmaChallengeFailureIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(PlasmaChallengeFailure)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(PlasmaChallengeFailure)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *PlasmaChallengeFailureIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *PlasmaChallengeFailureIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// PlasmaChallengeFailure represents a ChallengeFailure event raised by the Plasma contract.
+type PlasmaChallengeFailure struct {
+	Sender common.Address
+	ExitId *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
+}
+
+// FilterChallengeFailure is a free log retrieval operation binding the contract event 0xb78b9d173dd582fa5a03d34343f97dbf3d9f96119f248d7a4a1e86cd190a952e.
+//
+// Solidity: event ChallengeFailure(sender address, exitId uint256)
+func (_Plasma *PlasmaFilterer) FilterChallengeFailure(opts *bind.FilterOpts) (*PlasmaChallengeFailureIterator, error) {
+
+	logs, sub, err := _Plasma.contract.FilterLogs(opts, "ChallengeFailure")
+	if err != nil {
+		return nil, err
+	}
+	return &PlasmaChallengeFailureIterator{contract: _Plasma.contract, event: "ChallengeFailure", logs: logs, sub: sub}, nil
+}
+
+// WatchChallengeFailure is a free log subscription operation binding the contract event 0xb78b9d173dd582fa5a03d34343f97dbf3d9f96119f248d7a4a1e86cd190a952e.
+//
+// Solidity: event ChallengeFailure(sender address, exitId uint256)
+func (_Plasma *PlasmaFilterer) WatchChallengeFailure(opts *bind.WatchOpts, sink chan<- *PlasmaChallengeFailure) (event.Subscription, error) {
+
+	logs, sub, err := _Plasma.contract.WatchLogs(opts, "ChallengeFailure")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(PlasmaChallengeFailure)
+				if err := _Plasma.contract.UnpackLog(event, "ChallengeFailure", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// PlasmaChallengeSuccessIterator is returned from FilterChallengeSuccess and is used to iterate over the raw logs and unpacked data for ChallengeSuccess events raised by the Plasma contract.
+type PlasmaChallengeSuccessIterator struct {
+	Event *PlasmaChallengeSuccess // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *PlasmaChallengeSuccessIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(PlasmaChallengeSuccess)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(PlasmaChallengeSuccess)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *PlasmaChallengeSuccessIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *PlasmaChallengeSuccessIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// PlasmaChallengeSuccess represents a ChallengeSuccess event raised by the Plasma contract.
+type PlasmaChallengeSuccess struct {
+	Sender common.Address
+	ExitId *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
+}
+
+// FilterChallengeSuccess is a free log retrieval operation binding the contract event 0x93ca42f740a7f4b51069fa759cd1dc23a049ef191c05f54008adf2bbfc29693a.
+//
+// Solidity: event ChallengeSuccess(sender address, exitId uint256)
+func (_Plasma *PlasmaFilterer) FilterChallengeSuccess(opts *bind.FilterOpts) (*PlasmaChallengeSuccessIterator, error) {
+
+	logs, sub, err := _Plasma.contract.FilterLogs(opts, "ChallengeSuccess")
+	if err != nil {
+		return nil, err
+	}
+	return &PlasmaChallengeSuccessIterator{contract: _Plasma.contract, event: "ChallengeSuccess", logs: logs, sub: sub}, nil
+}
+
+// WatchChallengeSuccess is a free log subscription operation binding the contract event 0x93ca42f740a7f4b51069fa759cd1dc23a049ef191c05f54008adf2bbfc29693a.
+//
+// Solidity: event ChallengeSuccess(sender address, exitId uint256)
+func (_Plasma *PlasmaFilterer) WatchChallengeSuccess(opts *bind.WatchOpts, sink chan<- *PlasmaChallengeSuccess) (event.Subscription, error) {
+
+	logs, sub, err := _Plasma.contract.WatchLogs(opts, "ChallengeSuccess")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(PlasmaChallengeSuccess)
+				if err := _Plasma.contract.UnpackLog(event, "ChallengeSuccess", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
 }
 
 // PlasmaDebugAddressIterator is returned from FilterDebugAddress and is used to iterate over the raw logs and unpacked data for DebugAddress events raised by the Plasma contract.

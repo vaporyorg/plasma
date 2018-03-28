@@ -13,6 +13,8 @@ contract Plasma {
     event Deposit(address sender, uint value);
     event SubmitBlock(address sender, bytes32 root);
     event ExitStarted(address sender, uint amount, uint blocknum, uint txindex, uint oindex);
+    event ChallengeSuccess(address sender, uint exitId);
+    event ChallengeFailure(address sender, uint exitId);
     event DebugBytes32(address sender, bytes32 item);
     event DebugBytes(address sender, bytes item);
     event DebugAddress(address sender, address item);
@@ -24,6 +26,7 @@ contract Plasma {
     mapping(uint256 => exit) public exits;
     uint256 public currentChildBlock;
     uint256[] public exitsIndexes;
+    uint256 public lastExitId; // Not sure if this makes sense with a priority queue
 
     struct childBlock {
         bytes32 root;
@@ -59,8 +62,8 @@ contract Plasma {
         var txItem = txBytes.toRLPItem();
         var txList = txItem.toList();
 
-        // TODO: update after format of txBytes changes.
-        require(msg.sender == txList[0].toAddress());
+        var newOwnerIdx = 6;
+        require(msg.sender == txList[newOwnerIdx].toAddress());
 
         bytes32 root = createSimpleMerkleRoot(txBytes);
 
@@ -75,13 +78,12 @@ contract Plasma {
     }
 
     function createSimpleMerkleRoot(bytes txBytes) returns (bytes32) {
-        bytes32 zeroBytes;
+        // TODO: this may be less secur because the hash looks the same at multiple levels
+        bytes32 zeroHash = keccak256(hex"0000000000000000000000000000000000000000000000000000000000000000");
+        bytes32 root = keccak256(txBytes);
         
-        // TODO: new bytes(130) must match how we hash empty nodes on side-chain.
-        bytes32 root = keccak256(keccak256(txBytes), new bytes(130));
-        for (uint i = 0; i < 16; i++) {
-            root = keccak256(root, zeroBytes);
-            zeroBytes = keccak256(zeroBytes, zeroBytes);
+        for (uint i = 0; i < 15; i++) {
+            root = keccak256(root, zeroHash);
         }
 
         return root;
@@ -98,21 +100,25 @@ contract Plasma {
         var txItem = txBytes.toRLPItem();
         var txList = txItem.toList();
 
-        // TODO: update after format of txBytes changes.
-        var baseIndex = oindex * 2;
+        var baseIndex = 6 + (oindex * 2);
 
         require(msg.sender == txList[baseIndex].toAddress());
 
         var amount = txList[baseIndex + 1].toUint();
 
-        var res = checkProof(blocknum, txindex, txBytes, proof);
+        // Simplify contract by only allowing exits > 0
+        require(amount > 0);
 
-        DebugBool(msg.sender, res);
+        var exists = checkProof(blocknum, txindex, txBytes, proof);
 
-        uint256 length = exitsIndexes.length++;
-        exitsIndexes[length] = length;
+        require(exists);
+
+        uint256 exitId = exitsIndexes.length++;
+        // TODO: what does this mean when we have a priority queue
+        lastExitId = exitId;
+        exitsIndexes[exitId] = exitId;
         
-        exits[length] = exit({
+        exits[exitId] = exit({
             owner: msg.sender,
             amount: amount,
             // These are necessary for challenges.
@@ -123,6 +129,59 @@ contract Plasma {
         });
 
         ExitStarted(msg.sender, amount, blocknum, txindex, oindex);
+    }
+
+    function challengeExit(
+        uint256 exitId,
+        uint256 blocknum,
+        uint256 txindex,
+        bytes txBytes,
+        bytes proof
+    ) public
+    {
+        var currExit = exits[exitId];
+        var txItem = txBytes.toRLPItem();
+        var txList = txItem.toList();
+
+        // Update this to contain inputs
+        var firstInput = txList[0].toUint() == currExit.blocknum && txList[1].toUint() == currExit.txindex && txList[2].toUint() == currExit.oindex;
+        var secondInput = txList[3].toUint() == currExit.blocknum && txList[4].toUint() == currExit.txindex && txList[5].toUint() == currExit.oindex;
+
+        if(!firstInput && !secondInput) {
+            ChallengeFailure(msg.sender, exitId);
+            return;
+        }
+
+        var exists = checkProof(blocknum, txindex, txBytes, proof);
+
+        if (exists) {
+            require(currExit.amount > 0);
+
+            uint256 burn;
+            if (currExit.owner.balance < currExit.amount) {
+                burn = currExit.owner.balance;
+            } else {
+                burn = currExit.amount;
+            }
+
+            // Get Rekt.
+            currExit.owner.send(-burn);
+
+             // If it's not legit then remove exit, and slash that amount from user.
+            exits[exitId] = exit({
+                owner: address(0),
+                amount: 0,
+                blocknum: 0,
+                txindex: 0,
+                oindex: 0,
+                started_at: 0
+            });
+
+            ChallengeSuccess(msg.sender, exitId);
+        } else {
+            // This challenge sucks.
+            ChallengeFailure(msg.sender, exitId);
+        }
     }
 
     function checkProof(

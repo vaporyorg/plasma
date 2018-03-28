@@ -71,7 +71,6 @@ func emptyTree() MerkleTree {
 }
 
 func treeFromLevel16(level []MerkleNode) MerkleTree {
-
 	if float64(len(level)) > math.Pow(2, 15) {
 		// TODO: throw err instead.
 		panic("Level must fit within a tree of depth 16!")
@@ -87,7 +86,7 @@ func treeFromLevel16(level []MerkleNode) MerkleTree {
 			left := &level[i]
 			var right *MerkleNode
 
-			// 	// Empty so add an empty node.
+			// Empty so add an empty node.
 			if i+1 > len(level)-1 {
 				right = &MerkleNode{
 					Hash: emptyHash,

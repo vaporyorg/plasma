@@ -15,15 +15,10 @@ import (
 	"github.com/kyokan/plasma/util"
 )
 
-func StartExit(
+func CurrentChildBlock(
 	plasma *contracts.Plasma,
-	privateKeyECDSA *ecdsa.PrivateKey,
 	address string,
-	txs []chain.Transaction,
-	merkle util.MerkleTree,
-	txindex int,
-) {
-	auth := createAuth(privateKeyECDSA)
+) *big.Int {
 	opts := createCallOpts(address)
 
 	blocknum, err := plasma.CurrentChildBlock(opts)
@@ -32,9 +27,72 @@ func StartExit(
 		panic(err)
 	}
 
-	oindex := new(big.Int).SetUint64(0)
+	return blocknum
+}
 
-	bytes, err := rlp.EncodeToBytes(&txs[txindex])
+func LastExitId(
+	plasma *contracts.Plasma,
+	address string,
+) *big.Int {
+	opts := createCallOpts(address)
+	exitId, err := plasma.LastExitId(opts)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return exitId
+}
+
+func ChallengeExit(
+	plasma *contracts.Plasma,
+	privateKeyECDSA *ecdsa.PrivateKey,
+	address string,
+	txs []chain.Transaction,
+	merkle util.MerkleTree,
+	blocknum *big.Int,
+	txindex *big.Int,
+	exitId *big.Int,
+) {
+	auth := createAuth(privateKeyECDSA)
+	bytes, err := rlp.EncodeToBytes(&txs[txindex.Int64()])
+
+	if err != nil {
+		panic(err)
+	}
+
+	// This must be a tx and it's okay if it's the same block, but could be another.
+	// Weird to do down cast but lets try it.
+	proof := createMerkleProof(merkle, txindex)
+
+	tx, err := plasma.ChallengeExit(
+		auth,
+		exitId,
+		blocknum,
+		txindex,
+		bytes,
+		proof,
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Challenge Exit pending: 0x%x\n", tx.Hash())
+}
+
+func StartExit(
+	plasma *contracts.Plasma,
+	privateKeyECDSA *ecdsa.PrivateKey,
+	address string,
+	txs []chain.Transaction,
+	merkle util.MerkleTree,
+	blocknum *big.Int,
+	txindex *big.Int,
+) {
+	auth := createAuth(privateKeyECDSA)
+	oindex := new(big.Int).SetUint64(0)
+	bytes, err := rlp.EncodeToBytes(&txs[txindex.Int64()])
 
 	if err != nil {
 		panic(err)
@@ -44,8 +102,8 @@ func StartExit(
 
 	tx, err := plasma.StartExit(
 		auth,
-		new(big.Int).SetInt64(blocknum.Int64()-1),
-		new(big.Int).SetInt64(int64(txindex)),
+		blocknum,
+		txindex,
 		oindex,
 		bytes,
 		proof,
@@ -83,11 +141,11 @@ func Deposit(
 	privateKeyECDSA *ecdsa.PrivateKey,
 	address string,
 	value int,
+	t *chain.Transaction,
 ) {
 	auth := createAuth(privateKeyECDSA)
 	auth.Value = new(big.Int).SetInt64(int64(value))
 
-	t := createTestTransaction(address, value)
 	bytes, err := rlp.EncodeToBytes(&t)
 
 	if err != nil {
@@ -101,13 +159,6 @@ func Deposit(
 	}
 
 	fmt.Printf("Deposit pending: 0x%x\n", tx.Hash())
-}
-
-func CreateTransactions(address string) []chain.Transaction {
-	t1 := createTestTransaction(address, 100)
-	t2 := createTestTransaction(address, 200)
-	t3 := createTestTransaction(address, 300)
-	return []chain.Transaction{t1, t2, t3}
 }
 
 func createAuth(privateKeyECDSA *ecdsa.PrivateKey) *bind.TransactOpts {
@@ -124,14 +175,14 @@ func createCallOpts(address string) *bind.CallOpts {
 	}
 }
 
-func createMerkleProof(merkle util.MerkleTree, index int) []byte {
+func createMerkleProof(merkle util.MerkleTree, index *big.Int) []byte {
 	proofs := findProofs(&merkle.Root, [][]byte{}, 1)
 
-	if index >= len(proofs) {
+	if index.Int64() >= int64(len(proofs)) {
 		panic("Transaction index must be within set of proofs")
 	}
 
-	return proofs[index]
+	return proofs[index.Int64()]
 }
 
 // TODO: we could optimize this with an index.
@@ -175,21 +226,4 @@ func CreateMerkleTree(accepted []chain.Transaction) util.MerkleTree {
 
 	merkle := util.TreeFromRLPItems(hashables)
 	return merkle
-}
-
-func createTestTransaction(address string, amount int) chain.Transaction {
-	return chain.Transaction{
-		Input0: chain.ZeroInput(),
-		Input1: chain.ZeroInput(),
-		Sig0:   []byte{},
-		Sig1:   []byte{},
-		Output0: &chain.Output{
-			NewOwner: common.HexToAddress(address),
-			Amount:   new(big.Int).SetInt64(int64(amount)),
-		},
-		Output1: chain.ZeroOutput(),
-		Fee:     new(big.Int),
-		BlkNum:  uint64(0),
-		TxIdx:   0,
-	}
 }
