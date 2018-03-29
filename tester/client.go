@@ -62,6 +62,7 @@ func Main(c *cli.Context) {
 
 	exitAndChallengeSameBlock(plasma, privateKeyECDSA, userAddress)
 	exitAndChallengeDeposit(plasma, privateKeyECDSA, userAddress)
+	finalize(plasma)
 	logs(plasma)
 }
 
@@ -152,6 +153,10 @@ func exitAndChallengeDeposit(
 		exitId,
 	)
 	time.Sleep(3 * time.Second)
+}
+
+func finalize(plasma *contracts.Plasma) {
+	Finalize(plasma)
 }
 
 func logs(plasma *contracts.Plasma) {

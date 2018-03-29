@@ -80,7 +80,7 @@ contract Plasma {
     }
 
     function createSimpleMerkleRoot(bytes txBytes) returns (bytes32) {
-        // TODO: this may be less secur because the hash looks the same at multiple levels
+        // TODO: this may be less secure because the hash looks the same at multiple levels
         bytes32 zeroHash = keccak256(hex"0000000000000000000000000000000000000000000000000000000000000000");
         bytes32 root = keccak256(txBytes);
         
@@ -223,31 +223,39 @@ contract Plasma {
         return otherRoot == root;
     }
 
-    // Periodically monitor if we should finalize
-    function shouldFinalize() constant returns (bool) {
-        //finalize every 2 days or something?
-        return block.timestamp - lastFinalizedTime == 100;
-    }
-
     // TODO: automatically attempt to finalize after other contract calls?
     function finalize() {
+        if (!shouldFinalize()) {
+            return;
+        }
+
+        lastFinalizedTime = block.timestamp;
+
         for(uint i = 0; i < exitPriority.length; i++) {
             // TODO: update when using priority queue
             var exitId = exitPriority[i];
             var currExit = exits[exitId];
-            if(isSevenDays(currExit.started_at)) {
-                // pay them
+            if (
+                isSevenDays(currExit.started_at) &&
+                currExit.owner != address(0) &&
+                currExit.amount > 0
+            ) {
                 currExit.owner.send(currExit.amount);
-
-                // Is this the correct way to get current timestamp
-                lastFinalizedTime = block.timestamp;
             }
         }
+
+        // TODO: reorder queue?
     }
 
-    function isSevenDays(uint timestamp) returns (bool) {
-        // After seven days allow exits to process if they haven't been challenged.
-        // TODO: reset the queue?
-        return false;
+    // Periodically monitor if we should finalize
+    function shouldFinalize() constant returns (bool) {
+        return block.timestamp > lastFinalizedTime + 2 days;
     }
+
+    function isSevenDays(uint256 timestamp) constant returns (bool) {
+        // After seven days allow exits to process
+        return block.timestamp > timestamp + 7 days; 
+    }
+
+    // function calcPriority(){}
 }

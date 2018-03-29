@@ -44,6 +44,13 @@ func LastExitId(
 	return exitId
 }
 
+func Finalize(
+	plasma *contracts.Plasma,
+	privateKeyECDSA *ecdsa.PrivateKey,
+) {
+	auth := createAuth(privateKeyECDSA)
+}
+
 func ChallengeExit(
 	plasma *contracts.Plasma,
 	privateKeyECDSA *ecdsa.PrivateKey,
