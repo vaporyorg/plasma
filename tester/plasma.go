@@ -49,6 +49,13 @@ func Finalize(
 	privateKeyECDSA *ecdsa.PrivateKey,
 ) {
 	auth := createAuth(privateKeyECDSA)
+	tx, err := plasma.Finalize(auth)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Finalize pending: 0x%x\n", tx.Hash())
 }
 
 func ChallengeExit(

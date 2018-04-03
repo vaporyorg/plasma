@@ -1,6 +1,7 @@
 pragma solidity ^0.4.17;
 
 import './libraries/ByteUtils.sol';
+import './PriorityQueue.sol';
 import './libraries/RLP.sol';
 import './libraries/SafeMath.sol';
 
@@ -15,6 +16,7 @@ contract Plasma {
     event ExitStarted(address sender, uint amount, uint blocknum, uint txindex, uint oindex);
     event ChallengeSuccess(address sender, uint exitId);
     event ChallengeFailure(address sender, uint exitId);
+    event FinalizeExit(address sender, uint exitId);
     event DebugBytes32(address sender, bytes32 item);
     event DebugBytes(address sender, bytes item);
     event DebugAddress(address sender, address item);
@@ -25,7 +27,7 @@ contract Plasma {
     mapping(uint256 => childBlock) public childChain;
     mapping(uint256 => exit) public exits;
     uint256 public currentChildBlock;
-    uint256[] public exitPriority;
+    PriorityQueue public exitQueue;
     uint256 public lastExitId; // Not sure if this makes sense with a priority queue
     uint256 public lastFinalizedTime;
 
@@ -47,6 +49,7 @@ contract Plasma {
         authority = msg.sender;
         currentChildBlock = 1;
         lastFinalizedTime = block.timestamp;
+        exitQueue = new PriorityQueue();
     }
 
     function submitBlock(bytes32 root) public {
@@ -115,12 +118,14 @@ contract Plasma {
 
         require(exists);
 
-        uint256 exitId = exitPriority.length++;
-        // TODO: what does this mean when we have a priority queue
-        lastExitId = exitId;
-        exitPriority[exitId] = exitId;
+        // TODO: check that the sigs given to the utxo owner from the input owner
+        // are legit from the side chain.
+
+        uint256 priority = calcPriority(blocknum, txindex, oindex);
+        exitQueue.add(priority);
+        lastExitId = priority; // For convenience and debugging.
         
-        exits[exitId] = exit({
+        exits[priority] = exit({
             owner: msg.sender,
             amount: amount,
             // These are necessary for challenges.
@@ -179,12 +184,19 @@ contract Plasma {
                 started_at: 0
             });
 
+            // Remove from queue
+            exitQueue.remove(exitId);
+
             ChallengeSuccess(msg.sender, exitId);
         } else {
             // This challenge sucks.
             ChallengeFailure(msg.sender, exitId);
         }
     }
+
+    // function checkSigs() {
+
+    // }
 
     function checkProof(
         uint256 blocknum,
@@ -223,28 +235,28 @@ contract Plasma {
         return otherRoot == root;
     }
 
-    // TODO: automatically attempt to finalize after other contract calls?
+    // TODO: passively finalize.
     function finalize() {
         if (!shouldFinalize()) {
             return;
         }
 
         lastFinalizedTime = block.timestamp;
-
-        for(uint i = 0; i < exitPriority.length; i++) {
-            // TODO: update when using priority queue
-            var exitId = exitPriority[i];
+        uint256 exitId = exitQueue.pop();
+        while(exitId != SafeMath.max()) {
             var currExit = exits[exitId];
+
             if (
-                isSevenDays(currExit.started_at) &&
+                isFinalizableTime(currExit.started_at) &&
                 currExit.owner != address(0) &&
                 currExit.amount > 0
             ) {
                 currExit.owner.send(currExit.amount);
+                FinalizeExit(msg.sender, exitId);
             }
-        }
 
-        // TODO: reorder queue?
+            exitId = exitQueue.pop();
+        }
     }
 
     // Periodically monitor if we should finalize
@@ -252,10 +264,17 @@ contract Plasma {
         return block.timestamp > lastFinalizedTime + 2 days;
     }
 
-    function isSevenDays(uint256 timestamp) constant returns (bool) {
-        // After seven days allow exits to process
-        return block.timestamp > timestamp + 7 days; 
+    function isFinalizableTime(uint256 timestamp) constant returns (bool) {
+        return block.timestamp > timestamp + 14 days;
     }
 
-    // function calcPriority(){}
+    function calcPriority(
+        uint256 blocknum,
+        uint256 txindex,
+        uint256 oindex
+    ) constant returns (uint256) {
+        // For now always allow the earliest block to be in the front
+        // of the queue.  Don't care about 7 day cliff.
+        return blocknum * 1000000000 + txindex * 10000 + oindex;
+    }
 }

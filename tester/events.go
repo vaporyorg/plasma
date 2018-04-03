@@ -284,6 +284,33 @@ func ChallengeFailureFilter(plasma *contracts.Plasma) {
 	fmt.Printf("%d Challenge Failure logs found \n", length)
 }
 
+func FinalizeExitFilter(plasma *contracts.Plasma) {
+	opts := bind.FilterOpts{
+		Start:   0x0, // TODO: in the future we should store the last starting point in the db.
+		End:     nil,
+		Context: context.Background(),
+	}
+
+	itr, err := plasma.FilterFinalizeExit(&opts)
+
+	if err != nil {
+		panic(err)
+	}
+
+	next := true
+	length := 0
+
+	for next {
+		if itr.Event != nil {
+			fmt.Println(itr.Event.ExitId)
+			length++
+		}
+		next = itr.Next()
+	}
+
+	fmt.Printf("%d Finalize Exit logs found \n", length)
+}
+
 func DepositWatchFilter(plasma *contracts.Plasma) {
 	opts := bind.WatchOpts{
 		Start:   nil, // latest block

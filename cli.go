@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/kyokan/plasma/db"
 	"github.com/kyokan/plasma/plasma"
 	"github.com/kyokan/plasma/tester"
+	"github.com/kyokan/plasma/validator"
 	"github.com/urfave/cli"
 )
 
@@ -30,7 +30,7 @@ func main() {
 			Name: "contract-addr",
 			// Value: "0xd1d7dddd82189ea452eb5e104d13f0ca367887d9", // test
 			// Value: "0x4db27d728a8714af06474786dbaeadea9673c511", / dev
-			Value: "0xe843cde33060bf9cb11723934ead6a3de410ddee",
+			Value: "0x5d168adb7c410b94c524373c86b7c2ad5957bde0",
 			Usage: "Plasma contract address.",
 		},
 		cli.StringFlag{
@@ -79,11 +79,12 @@ func main() {
 		{
 			Name:   "validate",
 			Usage:  "Starts running a Plasma validator node.",
-			Action: func() { fmt.Println("Not implemented yet.") },
+			Action: validator.Start,
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "root-url",
-					Usage: "The URL of the root node.",
+				cli.IntFlag{
+					Name:  "rpc-port",
+					Value: 8644,
+					Usage: "Port for the RPC server to listen on.",
 				},
 			},
 		},
@@ -102,6 +103,11 @@ func main() {
 			Name:   "tester",
 			Usage:  "Runs client tests.",
 			Action: tester.Main,
+		},
+		{
+			Name:   "validator-main",
+			Usage:  "Runs validator main.",
+			Action: validator.Main,
 		},
 	}
 

@@ -16,7 +16,7 @@ import (
 )
 
 // PlasmaABI is the input ABI used to generate the binding from.
-const PlasmaABI = "[{\"constant\":true,\"inputs\":[],\"name\":\"lastExitId\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"exits\",\"outputs\":[{\"name\":\"owner\",\"type\":\"address\"},{\"name\":\"amount\",\"type\":\"uint256\"},{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"oindex\",\"type\":\"uint256\"},{\"name\":\"started_at\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"exitPriority\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"exitId\",\"type\":\"uint256\"},{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"txBytes\",\"type\":\"bytes\"},{\"name\":\"proof\",\"type\":\"bytes\"}],\"name\":\"challengeExit\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"finalize\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"isSevenDays\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"txBytes\",\"type\":\"bytes\"}],\"name\":\"createSimpleMerkleRoot\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"currentChildBlock\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"txBytes\",\"type\":\"bytes\"}],\"name\":\"deposit\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"oindex\",\"type\":\"uint256\"},{\"name\":\"txBytes\",\"type\":\"bytes\"},{\"name\":\"proof\",\"type\":\"bytes\"}],\"name\":\"startExit\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"root\",\"type\":\"bytes32\"}],\"name\":\"submitBlock\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"authority\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"txBytes\",\"type\":\"bytes\"},{\"name\":\"proof\",\"type\":\"bytes\"}],\"name\":\"checkProof\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"lastFinalizedTime\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"shouldFinalize\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"childChain\",\"outputs\":[{\"name\":\"root\",\"type\":\"bytes32\"},{\"name\":\"created_at\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"root\",\"type\":\"bytes32\"}],\"name\":\"SubmitBlock\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"blocknum\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"txindex\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"oindex\",\"type\":\"uint256\"}],\"name\":\"ExitStarted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"exitId\",\"type\":\"uint256\"}],\"name\":\"ChallengeSuccess\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"exitId\",\"type\":\"uint256\"}],\"name\":\"ChallengeFailure\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bytes32\"}],\"name\":\"DebugBytes32\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bytes\"}],\"name\":\"DebugBytes\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"address\"}],\"name\":\"DebugAddress\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"uint256\"}],\"name\":\"DebugUint\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bool\"}],\"name\":\"DebugBool\",\"type\":\"event\"}]"
+const PlasmaABI = "[{\"constant\":true,\"inputs\":[],\"name\":\"lastExitId\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"oindex\",\"type\":\"uint256\"}],\"name\":\"calcPriority\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"exits\",\"outputs\":[{\"name\":\"owner\",\"type\":\"address\"},{\"name\":\"amount\",\"type\":\"uint256\"},{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"oindex\",\"type\":\"uint256\"},{\"name\":\"started_at\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"exitId\",\"type\":\"uint256\"},{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"txBytes\",\"type\":\"bytes\"},{\"name\":\"proof\",\"type\":\"bytes\"}],\"name\":\"challengeExit\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"finalize\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"txBytes\",\"type\":\"bytes\"}],\"name\":\"createSimpleMerkleRoot\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"currentChildBlock\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"txBytes\",\"type\":\"bytes\"}],\"name\":\"deposit\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"oindex\",\"type\":\"uint256\"},{\"name\":\"txBytes\",\"type\":\"bytes\"},{\"name\":\"proof\",\"type\":\"bytes\"}],\"name\":\"startExit\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"root\",\"type\":\"bytes32\"}],\"name\":\"submitBlock\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"authority\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"blocknum\",\"type\":\"uint256\"},{\"name\":\"txindex\",\"type\":\"uint256\"},{\"name\":\"txBytes\",\"type\":\"bytes\"},{\"name\":\"proof\",\"type\":\"bytes\"}],\"name\":\"checkProof\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"lastFinalizedTime\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"isFinalizableTime\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"shouldFinalize\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"childChain\",\"outputs\":[{\"name\":\"root\",\"type\":\"bytes32\"},{\"name\":\"created_at\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"exitQueue\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"root\",\"type\":\"bytes32\"}],\"name\":\"SubmitBlock\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"blocknum\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"txindex\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"oindex\",\"type\":\"uint256\"}],\"name\":\"ExitStarted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"exitId\",\"type\":\"uint256\"}],\"name\":\"ChallengeSuccess\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"exitId\",\"type\":\"uint256\"}],\"name\":\"ChallengeFailure\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"exitId\",\"type\":\"uint256\"}],\"name\":\"FinalizeExit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bytes32\"}],\"name\":\"DebugBytes32\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bytes\"}],\"name\":\"DebugBytes\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"address\"}],\"name\":\"DebugAddress\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"uint256\"}],\"name\":\"DebugUint\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"item\",\"type\":\"bool\"}],\"name\":\"DebugBool\",\"type\":\"event\"}]"
 
 // Plasma is an auto generated Go binding around an Ethereum contract.
 type Plasma struct {
@@ -186,6 +186,32 @@ func (_Plasma *PlasmaCallerSession) Authority() (common.Address, error) {
 	return _Plasma.Contract.Authority(&_Plasma.CallOpts)
 }
 
+// CalcPriority is a free data retrieval call binding the contract method 0x0f341ee8.
+//
+// Solidity: function calcPriority(blocknum uint256, txindex uint256, oindex uint256) constant returns(uint256)
+func (_Plasma *PlasmaCaller) CalcPriority(opts *bind.CallOpts, blocknum *big.Int, txindex *big.Int, oindex *big.Int) (*big.Int, error) {
+	var (
+		ret0 = new(*big.Int)
+	)
+	out := ret0
+	err := _Plasma.contract.Call(opts, out, "calcPriority", blocknum, txindex, oindex)
+	return *ret0, err
+}
+
+// CalcPriority is a free data retrieval call binding the contract method 0x0f341ee8.
+//
+// Solidity: function calcPriority(blocknum uint256, txindex uint256, oindex uint256) constant returns(uint256)
+func (_Plasma *PlasmaSession) CalcPriority(blocknum *big.Int, txindex *big.Int, oindex *big.Int) (*big.Int, error) {
+	return _Plasma.Contract.CalcPriority(&_Plasma.CallOpts, blocknum, txindex, oindex)
+}
+
+// CalcPriority is a free data retrieval call binding the contract method 0x0f341ee8.
+//
+// Solidity: function calcPriority(blocknum uint256, txindex uint256, oindex uint256) constant returns(uint256)
+func (_Plasma *PlasmaCallerSession) CalcPriority(blocknum *big.Int, txindex *big.Int, oindex *big.Int) (*big.Int, error) {
+	return _Plasma.Contract.CalcPriority(&_Plasma.CallOpts, blocknum, txindex, oindex)
+}
+
 // ChildChain is a free data retrieval call binding the contract method 0xf95643b1.
 //
 // Solidity: function childChain( uint256) constant returns(root bytes32, created_at uint256)
@@ -248,30 +274,30 @@ func (_Plasma *PlasmaCallerSession) CurrentChildBlock() (*big.Int, error) {
 	return _Plasma.Contract.CurrentChildBlock(&_Plasma.CallOpts)
 }
 
-// ExitPriority is a free data retrieval call binding the contract method 0x36ef4e4b.
+// ExitQueue is a free data retrieval call binding the contract method 0xffed4bf5.
 //
-// Solidity: function exitPriority( uint256) constant returns(uint256)
-func (_Plasma *PlasmaCaller) ExitPriority(opts *bind.CallOpts, arg0 *big.Int) (*big.Int, error) {
+// Solidity: function exitQueue() constant returns(address)
+func (_Plasma *PlasmaCaller) ExitQueue(opts *bind.CallOpts) (common.Address, error) {
 	var (
-		ret0 = new(*big.Int)
+		ret0 = new(common.Address)
 	)
 	out := ret0
-	err := _Plasma.contract.Call(opts, out, "exitPriority", arg0)
+	err := _Plasma.contract.Call(opts, out, "exitQueue")
 	return *ret0, err
 }
 
-// ExitPriority is a free data retrieval call binding the contract method 0x36ef4e4b.
+// ExitQueue is a free data retrieval call binding the contract method 0xffed4bf5.
 //
-// Solidity: function exitPriority( uint256) constant returns(uint256)
-func (_Plasma *PlasmaSession) ExitPriority(arg0 *big.Int) (*big.Int, error) {
-	return _Plasma.Contract.ExitPriority(&_Plasma.CallOpts, arg0)
+// Solidity: function exitQueue() constant returns(address)
+func (_Plasma *PlasmaSession) ExitQueue() (common.Address, error) {
+	return _Plasma.Contract.ExitQueue(&_Plasma.CallOpts)
 }
 
-// ExitPriority is a free data retrieval call binding the contract method 0x36ef4e4b.
+// ExitQueue is a free data retrieval call binding the contract method 0xffed4bf5.
 //
-// Solidity: function exitPriority( uint256) constant returns(uint256)
-func (_Plasma *PlasmaCallerSession) ExitPriority(arg0 *big.Int) (*big.Int, error) {
-	return _Plasma.Contract.ExitPriority(&_Plasma.CallOpts, arg0)
+// Solidity: function exitQueue() constant returns(address)
+func (_Plasma *PlasmaCallerSession) ExitQueue() (common.Address, error) {
+	return _Plasma.Contract.ExitQueue(&_Plasma.CallOpts)
 }
 
 // Exits is a free data retrieval call binding the contract method 0x342de179.
@@ -326,30 +352,30 @@ func (_Plasma *PlasmaCallerSession) Exits(arg0 *big.Int) (struct {
 	return _Plasma.Contract.Exits(&_Plasma.CallOpts, arg0)
 }
 
-// IsSevenDays is a free data retrieval call binding the contract method 0x67af67a6.
+// IsFinalizableTime is a free data retrieval call binding the contract method 0xccf390a9.
 //
-// Solidity: function isSevenDays(timestamp uint256) constant returns(bool)
-func (_Plasma *PlasmaCaller) IsSevenDays(opts *bind.CallOpts, timestamp *big.Int) (bool, error) {
+// Solidity: function isFinalizableTime(timestamp uint256) constant returns(bool)
+func (_Plasma *PlasmaCaller) IsFinalizableTime(opts *bind.CallOpts, timestamp *big.Int) (bool, error) {
 	var (
 		ret0 = new(bool)
 	)
 	out := ret0
-	err := _Plasma.contract.Call(opts, out, "isSevenDays", timestamp)
+	err := _Plasma.contract.Call(opts, out, "isFinalizableTime", timestamp)
 	return *ret0, err
 }
 
-// IsSevenDays is a free data retrieval call binding the contract method 0x67af67a6.
+// IsFinalizableTime is a free data retrieval call binding the contract method 0xccf390a9.
 //
-// Solidity: function isSevenDays(timestamp uint256) constant returns(bool)
-func (_Plasma *PlasmaSession) IsSevenDays(timestamp *big.Int) (bool, error) {
-	return _Plasma.Contract.IsSevenDays(&_Plasma.CallOpts, timestamp)
+// Solidity: function isFinalizableTime(timestamp uint256) constant returns(bool)
+func (_Plasma *PlasmaSession) IsFinalizableTime(timestamp *big.Int) (bool, error) {
+	return _Plasma.Contract.IsFinalizableTime(&_Plasma.CallOpts, timestamp)
 }
 
-// IsSevenDays is a free data retrieval call binding the contract method 0x67af67a6.
+// IsFinalizableTime is a free data retrieval call binding the contract method 0xccf390a9.
 //
-// Solidity: function isSevenDays(timestamp uint256) constant returns(bool)
-func (_Plasma *PlasmaCallerSession) IsSevenDays(timestamp *big.Int) (bool, error) {
-	return _Plasma.Contract.IsSevenDays(&_Plasma.CallOpts, timestamp)
+// Solidity: function isFinalizableTime(timestamp uint256) constant returns(bool)
+func (_Plasma *PlasmaCallerSession) IsFinalizableTime(timestamp *big.Int) (bool, error) {
+	return _Plasma.Contract.IsFinalizableTime(&_Plasma.CallOpts, timestamp)
 }
 
 // LastExitId is a free data retrieval call binding the contract method 0x0992827d.
@@ -1667,6 +1693,129 @@ func (_Plasma *PlasmaFilterer) WatchExitStarted(opts *bind.WatchOpts, sink chan<
 				// New log arrived, parse the event and forward to the user
 				event := new(PlasmaExitStarted)
 				if err := _Plasma.contract.UnpackLog(event, "ExitStarted", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// PlasmaFinalizeExitIterator is returned from FilterFinalizeExit and is used to iterate over the raw logs and unpacked data for FinalizeExit events raised by the Plasma contract.
+type PlasmaFinalizeExitIterator struct {
+	Event *PlasmaFinalizeExit // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *PlasmaFinalizeExitIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(PlasmaFinalizeExit)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(PlasmaFinalizeExit)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *PlasmaFinalizeExitIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *PlasmaFinalizeExitIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// PlasmaFinalizeExit represents a FinalizeExit event raised by the Plasma contract.
+type PlasmaFinalizeExit struct {
+	Sender common.Address
+	ExitId *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
+}
+
+// FilterFinalizeExit is a free log retrieval operation binding the contract event 0x53ae5d7fafbf48db0ae65e6c5e21690183c96167b08ce2d477c83846794786eb.
+//
+// Solidity: event FinalizeExit(sender address, exitId uint256)
+func (_Plasma *PlasmaFilterer) FilterFinalizeExit(opts *bind.FilterOpts) (*PlasmaFinalizeExitIterator, error) {
+
+	logs, sub, err := _Plasma.contract.FilterLogs(opts, "FinalizeExit")
+	if err != nil {
+		return nil, err
+	}
+	return &PlasmaFinalizeExitIterator{contract: _Plasma.contract, event: "FinalizeExit", logs: logs, sub: sub}, nil
+}
+
+// WatchFinalizeExit is a free log subscription operation binding the contract event 0x53ae5d7fafbf48db0ae65e6c5e21690183c96167b08ce2d477c83846794786eb.
+//
+// Solidity: event FinalizeExit(sender address, exitId uint256)
+func (_Plasma *PlasmaFilterer) WatchFinalizeExit(opts *bind.WatchOpts, sink chan<- *PlasmaFinalizeExit) (event.Subscription, error) {
+
+	logs, sub, err := _Plasma.contract.WatchLogs(opts, "FinalizeExit")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(PlasmaFinalizeExit)
+				if err := _Plasma.contract.UnpackLog(event, "FinalizeExit", log); err != nil {
 					return err
 				}
 				event.Raw = log

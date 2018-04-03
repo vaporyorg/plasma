@@ -60,9 +60,9 @@ func Main(c *cli.Context) {
 
 	plasma := CreatePlasmaClient(nodeURL, contractAddress)
 
-	exitAndChallengeSameBlock(plasma, privateKeyECDSA, userAddress)
-	exitAndChallengeDeposit(plasma, privateKeyECDSA, userAddress)
-	finalize(plasma)
+	// exitAndChallengeSameBlock(plasma, privateKeyECDSA, userAddress)
+	// exitAndChallengeDeposit(plasma, privateKeyECDSA, userAddress)
+	// finalize(plasma, privateKeyECDSA, userAddress)
 	logs(plasma)
 }
 
@@ -155,8 +155,32 @@ func exitAndChallengeDeposit(
 	time.Sleep(3 * time.Second)
 }
 
-func finalize(plasma *contracts.Plasma) {
-	Finalize(plasma)
+func finalize(
+	plasma *contracts.Plasma,
+	privateKeyECDSA *ecdsa.PrivateKey,
+	userAddress string,
+) {
+	// Current block is the next block. Should we change that?
+	blocknum := CurrentChildBlock(plasma, userAddress)
+	txs := createSubmitBlockTxs(blocknum, userAddress)
+	merkle := CreateMerkleTree(txs)
+
+	SubmitBlock(plasma, privateKeyECDSA, userAddress, txs, merkle)
+	time.Sleep(5 * time.Second)
+
+	blocknum = CurrentChildBlock(plasma, userAddress)
+	StartExit(
+		plasma,
+		privateKeyECDSA,
+		userAddress,
+		txs,
+		merkle,
+		util.Sub(blocknum, 1),
+		util.NewInt(2),
+	)
+	time.Sleep(3 * time.Second)
+
+	Finalize(plasma, privateKeyECDSA)
 }
 
 func logs(plasma *contracts.Plasma) {
@@ -179,6 +203,8 @@ func logs(plasma *contracts.Plasma) {
 	ChallengeSuccessFilter(plasma)
 	time.Sleep(3 * time.Second)
 	ChallengeFailureFilter(plasma)
+	time.Sleep(3 * time.Second)
+	FinalizeExitFilter(plasma)
 	time.Sleep(3 * time.Second)
 }
 
