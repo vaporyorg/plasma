@@ -27,7 +27,8 @@ contract Plasma {
     mapping(uint256 => childBlock) public childChain;
     mapping(uint256 => exit) public exits;
     uint256 public currentChildBlock;
-    PriorityQueue public exitQueue;
+    // PriorityQueue public exitQueue;
+    uint256[] public exitIds;
     uint256 public lastExitId; // Not sure if this makes sense with a priority queue
     uint256 public lastFinalizedTime;
 
@@ -49,7 +50,7 @@ contract Plasma {
         authority = msg.sender;
         currentChildBlock = 1;
         lastFinalizedTime = block.timestamp;
-        exitQueue = new PriorityQueue();
+        // exitQueue = new PriorityQueue();
     }
 
     function submitBlock(bytes32 root) public {
@@ -122,8 +123,9 @@ contract Plasma {
         // are legit from the side chain.
 
         uint256 priority = calcPriority(blocknum, txindex, oindex);
-        exitQueue.add(priority);
+        // exitQueue.add(priority);
         lastExitId = priority; // For convenience and debugging.
+        exitIds[exitIds.length++] = priority;
         
         exits[priority] = exit({
             owner: msg.sender,
@@ -185,7 +187,8 @@ contract Plasma {
             });
 
             // Remove from queue
-            exitQueue.remove(exitId);
+            // exitQueue.remove(exitId);
+            //exitIds[exitId] = 0;
 
             ChallengeSuccess(msg.sender, exitId);
         } else {
@@ -236,14 +239,38 @@ contract Plasma {
     }
 
     // TODO: passively finalize.
+    // function finalize() {
+    //     if (!shouldFinalize()) {
+    //         return;
+    //     }
+
+    //     lastFinalizedTime = block.timestamp;
+    //     uint256 exitId = exitQueue.pop();
+    //     while(exitId != SafeMath.max()) {
+    //         var currExit = exits[exitId];
+
+    //         if (
+    //             isFinalizableTime(currExit.started_at) &&
+    //             currExit.owner != address(0) &&
+    //             currExit.amount > 0
+    //         ) {
+    //             currExit.owner.send(currExit.amount);
+    //             FinalizeExit(msg.sender, exitId);
+    //         }
+
+    //         exitId = exitQueue.pop();
+    //     }
+    // }
+
     function finalize() {
         if (!shouldFinalize()) {
             return;
         }
 
         lastFinalizedTime = block.timestamp;
-        uint256 exitId = exitQueue.pop();
-        while(exitId != SafeMath.max()) {
+
+        for(uint i = 0; i < exitIds.length; i++) {
+            uint256 exitId = exitIds[i];
             var currExit = exits[exitId];
 
             if (
@@ -252,20 +279,28 @@ contract Plasma {
                 currExit.amount > 0
             ) {
                 currExit.owner.send(currExit.amount);
+                exits[exitId] = exit({
+                    owner: address(0),
+                    amount: 0,
+                    blocknum: 0,
+                    txindex: 0,
+                    oindex: 0,
+                    started_at: 0
+                });
                 FinalizeExit(msg.sender, exitId);
             }
-
-            exitId = exitQueue.pop();
         }
     }
 
     // Periodically monitor if we should finalize
     function shouldFinalize() constant returns (bool) {
-        return block.timestamp > lastFinalizedTime + 2 days;
+        // return block.timestamp > lastFinalizedTime + 2 days;
+        return true;
     }
 
     function isFinalizableTime(uint256 timestamp) constant returns (bool) {
-        return block.timestamp > timestamp + 14 days;
+        // return block.timestamp > timestamp + 14 days;
+        return true;
     }
 
     function calcPriority(
