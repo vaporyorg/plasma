@@ -60,7 +60,7 @@ func Main(c *cli.Context) {
 
 	plasma := CreatePlasmaClient(nodeURL, contractAddress)
 
-	// exitAndChallengeSameBlock(plasma, privateKeyECDSA, userAddress)
+	exitAndChallengeSameBlock(plasma, privateKeyECDSA, userAddress)
 	// exitAndChallengeDeposit(plasma, privateKeyECDSA, userAddress)
 	// finalize(plasma, privateKeyECDSA, userAddress)
 	logs(plasma)
