@@ -1,16 +1,19 @@
 package node
 
 import (
-	"github.com/kyokan/plasma/chain"
-	"github.com/kyokan/plasma/db"
-	"github.com/kyokan/plasma/util"
 	"log"
 	"time"
+
+	"github.com/kyokan/plasma/chain"
+	"github.com/kyokan/plasma/db"
+	"github.com/kyokan/plasma/eth"
+	"github.com/kyokan/plasma/util"
 )
 
 type PlasmaNode struct {
-	DB     *db.Database
-	TxSink *TransactionSink
+	DB           *db.Database
+	TxSink       *TransactionSink
+	PlasmaClient *eth.PlasmaClient
 }
 
 func NewPlasmaNode(db *db.Database, sink *TransactionSink) *PlasmaNode {
@@ -83,6 +86,7 @@ func (node PlasmaNode) packageBlock(lastBlock chain.Block, txs []chain.Transacti
 	log.Printf("Packaging block %d containing %d transactions.", blkNum, len(txs))
 
 	accepted, rejected := EnsureNoDoubleSpend(txs)
+
 	hashables := make([]util.Hashable, len(accepted))
 
 	log.Printf("Accepted %d of %d transactions. %d rejected due to double spend.",
@@ -111,5 +115,21 @@ func (node PlasmaNode) packageBlock(lastBlock chain.Block, txs []chain.Transacti
 	}
 
 	node.DB.BlockDao.Save(&block)
+
+	// Report this block to the plasma contract
+	node.PlasmaClient.SubmitBlock(rlpMerkleTree(accepted))
+
 	blockChan <- &block
+}
+
+func rlpMerkleTree(accepted []chain.Transaction) util.MerkleTree {
+	hashables := make([]util.RLPHashable, len(accepted))
+
+	for i := range accepted {
+		txPtr := &accepted[i]
+		hashables[i] = util.RLPHashable(txPtr)
+	}
+
+	merkle := util.TreeFromRLPItems(hashables)
+	return merkle
 }
