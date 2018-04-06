@@ -1,4 +1,4 @@
-package tester
+package plasma
 
 import (
 	"context"
@@ -83,10 +83,7 @@ func ExitStartedFilter(plasma *contracts.Plasma) {
 	for next {
 		if itr.Event != nil {
 			fmt.Println(itr.Event.Sender.Hex())
-			fmt.Println(itr.Event.Amount)
-			fmt.Println(itr.Event.Blocknum)
-			fmt.Println(itr.Event.Txindex)
-			fmt.Println(itr.Event.Oindex)
+			fmt.Println(itr.Event.ExitId)
 			length++
 		}
 		next = itr.Next()

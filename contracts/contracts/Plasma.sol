@@ -13,7 +13,7 @@ contract Plasma {
 
     event Deposit(address sender, uint value);
     event SubmitBlock(address sender, bytes32 root);
-    event ExitStarted(address sender, uint amount, uint blocknum, uint txindex, uint oindex);
+    event ExitStarted(address sender, uint exitId);
     event ChallengeSuccess(address sender, uint exitId);
     event ChallengeFailure(address sender, uint exitId);
     event FinalizeExit(address sender, uint exitId);
@@ -27,8 +27,7 @@ contract Plasma {
     mapping(uint256 => childBlock) public childChain;
     mapping(uint256 => exit) public exits;
     uint256 public currentChildBlock;
-    // PriorityQueue public exitQueue;
-    uint256[] public exitIds;
+    PriorityQueue public exitQueue;
     uint256 public lastExitId; // Not sure if this makes sense with a priority queue
     uint256 public lastFinalizedTime;
 
@@ -50,7 +49,7 @@ contract Plasma {
         authority = msg.sender;
         currentChildBlock = 1;
         lastFinalizedTime = block.timestamp;
-        // exitQueue = new PriorityQueue();
+        exitQueue = new PriorityQueue();
     }
 
     function submitBlock(bytes32 root) public {
@@ -123,9 +122,8 @@ contract Plasma {
         // are legit from the side chain.
 
         uint256 priority = calcPriority(blocknum, txindex, oindex);
-        // exitQueue.add(priority);
         lastExitId = priority; // For convenience and debugging.
-        exitIds[exitIds.length++] = priority;
+        exitQueue.add(priority);
         
         exits[priority] = exit({
             owner: msg.sender,
@@ -137,7 +135,7 @@ contract Plasma {
             started_at: block.timestamp
         });
 
-        ExitStarted(msg.sender, amount, blocknum, txindex, oindex);
+        ExitStarted(msg.sender, priority);
     }
 
     function challengeExit(
@@ -152,7 +150,6 @@ contract Plasma {
         var txItem = txBytes.toRLPItem();
         var txList = txItem.toList();
 
-        // Update this to contain inputs
         var firstInput = txList[0].toUint() == currExit.blocknum && txList[1].toUint() == currExit.txindex && txList[2].toUint() == currExit.oindex;
         var secondInput = txList[3].toUint() == currExit.blocknum && txList[4].toUint() == currExit.txindex && txList[5].toUint() == currExit.oindex;
 
@@ -187,8 +184,7 @@ contract Plasma {
             });
 
             // Remove from queue
-            // exitQueue.remove(exitId);
-            //exitIds[exitId] = 0;
+            exitQueue.remove(exitId);
 
             ChallengeSuccess(msg.sender, exitId);
         } else {
@@ -239,38 +235,14 @@ contract Plasma {
     }
 
     // TODO: passively finalize.
-    // function finalize() {
-    //     if (!shouldFinalize()) {
-    //         return;
-    //     }
-
-    //     lastFinalizedTime = block.timestamp;
-    //     uint256 exitId = exitQueue.pop();
-    //     while(exitId != SafeMath.max()) {
-    //         var currExit = exits[exitId];
-
-    //         if (
-    //             isFinalizableTime(currExit.started_at) &&
-    //             currExit.owner != address(0) &&
-    //             currExit.amount > 0
-    //         ) {
-    //             currExit.owner.send(currExit.amount);
-    //             FinalizeExit(msg.sender, exitId);
-    //         }
-
-    //         exitId = exitQueue.pop();
-    //     }
-    // }
-
     function finalize() {
         if (!shouldFinalize()) {
             return;
         }
 
         lastFinalizedTime = block.timestamp;
-
-        for(uint i = 0; i < exitIds.length; i++) {
-            uint256 exitId = exitIds[i];
+        uint256 exitId = exitQueue.pop();
+        while(exitId != SafeMath.max()) {
             var currExit = exits[exitId];
 
             if (
@@ -289,6 +261,8 @@ contract Plasma {
                 });
                 FinalizeExit(msg.sender, exitId);
             }
+
+            exitId = exitQueue.pop();
         }
     }
 

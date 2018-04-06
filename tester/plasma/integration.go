@@ -1,40 +1,19 @@
-package tester
+package plasma
 
 import (
 	"crypto/ecdsa"
-	"log"
 	"math/big"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/kyokan/plasma/chain"
 	"github.com/kyokan/plasma/contracts/gen/contracts"
+	"github.com/kyokan/plasma/tester"
 	"github.com/kyokan/plasma/util"
 	"github.com/urfave/cli"
 )
 
-func CreatePlasmaClient(nodeUrl string, contractAddress string) *contracts.Plasma {
-	conn, err := ethclient.Dial(nodeUrl)
-
-	if err != nil {
-		log.Panic("Failed to start ETH client: ", err)
-	}
-
-	plasma, err := contracts.NewPlasma(common.HexToAddress(contractAddress), conn)
-
-	if err != nil {
-		log.Fatalf("Failed to instantiate a Token contract: %v", err)
-	}
-
-	return plasma
-}
-
-func exists(str string) bool {
-	return len(str) > 0
-}
-
-func Main(c *cli.Context) {
+func IntegrationTest(c *cli.Context) {
 	contractAddress := c.GlobalString("contract-addr")
 	nodeURL := c.GlobalString("node-url")
 	keystoreDir := c.GlobalString("keystore-dir")
@@ -46,11 +25,11 @@ func Main(c *cli.Context) {
 	var privateKeyECDSA *ecdsa.PrivateKey
 
 	if exists(userAddress) && exists(privateKey) {
-		privateKeyECDSA = ToPrivateKeyECDSA(privateKey)
+		privateKeyECDSA = tester.ToPrivateKeyECDSA(privateKey)
 	} else if exists(keystoreDir) &&
 		exists(keystoreFile) &&
 		exists(userAddress) {
-		keyWrapper := GetFromKeyStore(userAddress, keystoreDir, keystoreFile, signPassphrase)
+		keyWrapper := tester.GetFromKeyStore(userAddress, keystoreDir, keystoreFile, signPassphrase)
 		privateKeyECDSA = keyWrapper.PrivateKey
 	}
 
@@ -61,8 +40,8 @@ func Main(c *cli.Context) {
 	plasma := CreatePlasmaClient(nodeURL, contractAddress)
 
 	exitAndChallengeSameBlock(plasma, privateKeyECDSA, userAddress)
-	// exitAndChallengeDeposit(plasma, privateKeyECDSA, userAddress)
-	// finalize(plasma, privateKeyECDSA, userAddress)
+	exitAndChallengeDeposit(plasma, privateKeyECDSA, userAddress)
+	finalize(plasma, privateKeyECDSA, userAddress)
 	logs(plasma)
 }
 
@@ -271,6 +250,10 @@ func createTestTransaction(
 		BlkNum:  uint64(0),
 		TxIdx:   0,
 	}
+}
+
+func exists(str string) bool {
+	return len(str) > 0
 }
 
 // TODO: test with two inputs and outputs

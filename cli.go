@@ -5,7 +5,8 @@ import (
 
 	"github.com/kyokan/plasma/db"
 	"github.com/kyokan/plasma/plasma"
-	"github.com/kyokan/plasma/tester"
+	plasma_tests "github.com/kyokan/plasma/tester/plasma"
+	pq_tests "github.com/kyokan/plasma/tester/pq"
 	"github.com/urfave/cli"
 )
 
@@ -29,7 +30,12 @@ func main() {
 			Name: "contract-addr",
 			// Value: "0xd1d7dddd82189ea452eb5e104d13f0ca367887d9", // test
 			// Value: "0x4db27d728a8714af06474786dbaeadea9673c511", / dev
-			Value: "0x5d168adb7c410b94c524373c86b7c2ad5957bde0",
+			Value: "0x74e3fc764c2474f25369b9d021b7f92e8441a2dc",
+			Usage: "Plasma contract address.",
+		},
+		cli.StringFlag{
+			Name:  "priority-queue-contract-addr",
+			Value: "0xaee7f3641abe7b3fe364325df0482af04fc638b2",
 			Usage: "Plasma contract address.",
 		},
 		cli.StringFlag{
@@ -87,9 +93,14 @@ func main() {
 			},
 		},
 		{
-			Name:   "tester",
-			Usage:  "Runs client tests.",
-			Action: tester.Main,
+			Name:   "plasma-tests",
+			Usage:  "Runs plasma integration tests.",
+			Action: plasma_tests.IntegrationTest,
+		},
+		{
+			Name:   "pq-tests",
+			Usage:  "Runs priority queue integration tests.",
+			Action: pq_tests.IntegrationTest,
 		},
 	}
 
