@@ -1,13 +1,13 @@
 package plasma
 
 import (
-	"github.com/ethereum/go-ethereum/common"
+	"log"
+
 	"github.com/kyokan/plasma/db"
 	"github.com/kyokan/plasma/eth"
 	"github.com/kyokan/plasma/node"
 	"github.com/kyokan/plasma/rpc"
 	"github.com/urfave/cli"
-	"log"
 )
 
 func Start(c *cli.Context) {
@@ -36,17 +36,19 @@ func Start(c *cli.Context) {
 		sink.AcceptTransactionRequests(chch)
 	}()
 
-	go func() {
+	// TODO: remember last log scan position
 
-		ch := make(chan eth.DepositEvent)
-		err = client.SubscribeDeposits(common.HexToAddress(c.GlobalString("contract-addr")), ch)
+	// go func() {
 
-		if err != nil {
-			log.Panic("Failed to subscribe to deposits: ", err)
-		}
+	// 	ch := make(chan eth.DepositEvent)
+	// 	err = client.SubscribeDeposits(common.HexToAddress(c.GlobalString("contract-addr")), ch)
 
-		sink.AcceptDepositEvents(ch)
-	}()
+	// 	if err != nil {
+	// 		log.Panic("Failed to subscribe to deposits: ", err)
+	// 	}
+
+	// 	sink.AcceptDepositEvents(ch)
+	// }()
 
 	select {}
 }
