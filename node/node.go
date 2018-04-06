@@ -16,10 +16,11 @@ type PlasmaNode struct {
 	PlasmaClient *eth.PlasmaClient
 }
 
-func NewPlasmaNode(db *db.Database, sink *TransactionSink) *PlasmaNode {
+func NewPlasmaNode(db *db.Database, sink *TransactionSink, plasmaClient *eth.PlasmaClient) *PlasmaNode {
 	return &PlasmaNode{
-		DB:     db,
-		TxSink: sink,
+		DB:           db,
+		TxSink:       sink,
+		PlasmaClient: plasmaClient,
 	}
 }
 

@@ -17,41 +17,6 @@ type PlasmaClient struct {
 	userAddress string
 }
 
-func CreatePlasmaClientWithKeyStore(
-	nodeUrl string,
-	contractAddress string,
-	userAddress string,
-	keystoreDir string,
-	keystoreFile string,
-	signPassphrase string,
-) *PlasmaClient {
-	keyWrapper := util.GetFromKeyStore(userAddress, keystoreDir, keystoreFile, signPassphrase)
-	privateKeyECDSA := keyWrapper.PrivateKey
-
-	return CreatePlasmaClient(
-		nodeUrl,
-		contractAddress,
-		userAddress,
-		privateKeyECDSA,
-	)
-}
-
-func CreatePlasmaClientWithPrivateKey(
-	nodeUrl string,
-	contractAddress string,
-	userAddress string,
-	privateKey string,
-) *PlasmaClient {
-	privateKeyECDSA := util.ToPrivateKeyECDSA(privateKey)
-
-	return CreatePlasmaClient(
-		nodeUrl,
-		contractAddress,
-		userAddress,
-		privateKeyECDSA,
-	)
-}
-
 func CreatePlasmaClient(
 	nodeUrl string,
 	contractAddress string,
